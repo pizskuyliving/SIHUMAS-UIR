@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MahasiswaImportController;
 use App\Http\Controllers\StatistikController;
+use App\Http\Controllers\SuperAdmin\FakultasController;
 use App\Http\Controllers\SuperAdmin\RencanaWisudaController;
 use App\Http\Controllers\SuperAdmin\StatusFollowUpController;
 use App\Http\Controllers\SuperAdmin\UserController;
@@ -20,10 +21,14 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-    // Dashboard tabel utama (PIC & SuperAdmin)
+    // Dashboard: pilih Fakultas -> Prodi -> tabel Data & Follow Up (PIC & SuperAdmin)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/prodi/{prodi}', [DashboardController::class, 'prodi'])->name('dashboard.prodi');
+    Route::get('/dashboard/legacy', [DashboardController::class, 'legacy'])->name('dashboard.legacy');
     Route::put('/mahasiswa/{mahasiswa}/follow-up', [DashboardController::class, 'updateFollowUp'])
         ->name('follow-up.update');
+    Route::delete('/mahasiswa/{mahasiswa}', [DashboardController::class, 'destroy'])->name('mahasiswa.destroy');
+    Route::delete('/mahasiswa-bulk', [DashboardController::class, 'destroyBulk'])->name('mahasiswa.destroy-bulk');
 
     // Import Excel (PIC & SuperAdmin boleh upload)
     Route::get('/mahasiswa/import', [MahasiswaImportController::class, 'create'])->name('mahasiswa.import');
@@ -49,5 +54,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/rencana-wisuda', [RencanaWisudaController::class, 'store'])->name('rencana-wisuda.store');
         Route::patch('/rencana-wisuda/{rencanaWisuda}', [RencanaWisudaController::class, 'update'])->name('rencana-wisuda.update');
         Route::delete('/rencana-wisuda/{rencanaWisuda}', [RencanaWisudaController::class, 'destroy'])->name('rencana-wisuda.destroy');
+
+        Route::get('/fakultas', [FakultasController::class, 'index'])->name('fakultas.index');
+        Route::post('/fakultas', [FakultasController::class, 'store'])->name('fakultas.store');
+        Route::patch('/fakultas/{fakultas}', [FakultasController::class, 'update'])->name('fakultas.update');
+        Route::delete('/fakultas/{fakultas}', [FakultasController::class, 'destroy'])->name('fakultas.destroy');
+        Route::post('/fakultas/{fakultas}/prodi', [FakultasController::class, 'storeProdi'])->name('fakultas.prodi.store');
+        Route::patch('/prodi/{prodi}', [FakultasController::class, 'updateProdi'])->name('prodi.update');
+        Route::delete('/prodi/{prodi}', [FakultasController::class, 'destroyProdi'])->name('prodi.destroy');
     });
 });

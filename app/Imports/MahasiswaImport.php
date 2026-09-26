@@ -15,7 +15,15 @@ class MahasiswaImport implements ToModel, WithHeadingRow, SkipsEmptyRows, WithVa
     public int $updated = 0;
 
     /**
-     * Heading di excel sumber (baris 1, sesuai gambar contoh):
+     * @param int|null $prodiId Prodi tujuan (diisi dari halaman Import per Fakultas/Prodi).
+     *                          Boleh null kalau suatu saat masih ada import tanpa prodi.
+     */
+    public function __construct(protected ?int $prodiId = null)
+    {
+    }
+
+    /**
+     * Heading di excel sumber (baris 2, baris 1 kosong, sesuai gambar contoh):
      * No | Nama Mahasiswa | NPM | Nomor kontak
      * Laravel Excel otomatis mengubah heading jadi snake_case:
      * no | nama_mahasiswa | npm | nomor_kontak
@@ -35,6 +43,7 @@ class MahasiswaImport implements ToModel, WithHeadingRow, SkipsEmptyRows, WithVa
             'nama_mahasiswa' => trim((string) ($row['nama_mahasiswa'] ?? '')),
             'npm' => $npm,
             'no_hp' => isset($row['nomor_kontak']) ? (string) $row['nomor_kontak'] : null,
+            'prodi_id' => $this->prodiId,
         ];
 
         if ($existing) {

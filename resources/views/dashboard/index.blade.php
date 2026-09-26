@@ -43,11 +43,16 @@
 
                         <td class="px-3 py-3">
                             <template x-if="!editing">
-                                <span>{{ $m->fakultas ?: '-' }}</span>
+                                <span>{{ $m->nama_fakultas ?: '-' }}</span>
                             </template>
                             <template x-if="editing">
-                                <input form="{{ $formId }}" type="text" name="fakultas" value="{{ $m->fakultas }}"
-                                       class="w-32 rounded border-gray-300 text-xs">
+                                @if ($m->prodi)
+                                    {{-- Sudah punya Prodi dari hasil import per Fakultas/Prodi, tidak perlu diisi manual --}}
+                                    <span class="text-xs text-gray-400">{{ $m->nama_fakultas }}</span>
+                                @else
+                                    <input form="{{ $formId }}" type="text" name="fakultas" value="{{ $m->fakultas }}"
+                                           class="w-32 rounded border-gray-300 text-xs">
+                                @endif
                             </template>
                         </td>
                         <td class="px-3 py-3 font-medium">{{ $m->nama_mahasiswa }}</td>

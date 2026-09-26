@@ -42,6 +42,10 @@
                    class="block px-3 py-2 rounded-lg hover:bg-emerald-700 {{ request()->routeIs('superadmin.rencana-wisuda.*') ? 'bg-emerald-700 font-semibold' : '' }}">
                     🎓 Master Rencana Wisuda
                 </a>
+                <a href="{{ route('superadmin.fakultas.index') }}"
+                   class="block px-3 py-2 rounded-lg hover:bg-emerald-700 {{ request()->routeIs('superadmin.fakultas.*') ? 'bg-emerald-700 font-semibold' : '' }}">
+                    🏛️ Master Fakultas & Prodi
+                </a>
             @endif
         </nav>
         <div class="px-4 py-4 border-t border-emerald-700 text-sm">

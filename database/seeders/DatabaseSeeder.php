@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Fakultas;
 use App\Models\RencanaWisuda;
 use App\Models\StatusFollowUp;
 use App\Models\User;
@@ -31,6 +32,25 @@ class DatabaseSeeder extends Seeder
         // Pilihan default Rencana Wisuda
         foreach (['Ya', 'Belum Pasti', 'Tidak'] as $i => $nama) {
             RencanaWisuda::firstOrCreate(['nama' => $nama], ['urutan' => $i]);
+        }
+
+        // Contoh Fakultas + Prodi (silakan disesuaikan/ditambah lewat menu
+        // Master Fakultas & Prodi setelah login sebagai SuperAdmin)
+        $teknik = Fakultas::firstOrCreate(['nama' => 'Fakultas Teknik']);
+        foreach ([
+            'Teknik Informatika',
+            'Teknik Sipil',
+            'Teknik Elektro',
+            'Teknik Mesin',
+            'Teknik Industri',
+            'Arsitektur',
+        ] as $prodi) {
+            $teknik->prodis()->firstOrCreate(['nama' => $prodi]);
+        }
+
+        $ekonomi = Fakultas::firstOrCreate(['nama' => 'Fakultas Ekonomi dan Bisnis']);
+        foreach (['Manajemen', 'Akuntansi', 'Ekonomi Pembangunan'] as $prodi) {
+            $ekonomi->prodis()->firstOrCreate(['nama' => $prodi]);
         }
     }
 }
