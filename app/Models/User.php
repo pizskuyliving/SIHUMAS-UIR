@@ -17,6 +17,7 @@ class User extends Authenticatable
         'password',
         'role',
         'is_active',
+        'photo_path',
     ];
 
     protected $hidden = [
@@ -36,6 +37,20 @@ class User extends Authenticatable
     public function isSuperAdmin(): bool
     {
         return $this->role === 'superadmin';
+    }
+
+    /**
+     * URL foto profil, atau null kalau belum upload foto (view akan
+     * menampilkan avatar berupa huruf awal nama sebagai fallback).
+     */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->photo_path ? asset('avatars/' . $this->photo_path) : null;
+    }
+
+    public function getInitialAttribute(): string
+    {
+        return strtoupper(substr($this->name ?: '?', 0, 1));
     }
 
     public function followUps()

@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KinerjaPicController;
 use App\Http\Controllers\MahasiswaImportController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\SuperAdmin\FakultasController;
 use App\Http\Controllers\SuperAdmin\RencanaWisudaController;
@@ -21,6 +23,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+    // Edit profil (nama, email, foto, password) - semua user login
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
     // Dashboard: pilih Fakultas -> Prodi -> tabel Data & Follow Up (PIC & SuperAdmin)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/prodi/{prodi}', [DashboardController::class, 'prodi'])->name('dashboard.prodi');
@@ -36,6 +42,10 @@ Route::middleware('auth')->group(function () {
 
     // Statistik - bisa dilihat semua user
     Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik');
+
+    // Kinerja PIC: SuperAdmin bisa lihat semua PIC, PIC hanya bisa lihat datanya sendiri
+    // (pembatasan aksesnya ditangani di dalam KinerjaPicController, bukan di sini)
+    Route::get('/kinerja', [KinerjaPicController::class, 'index'])->name('kinerja.index');
 
     // ==== Khusus SuperAdmin ====
     Route::middleware('superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {

@@ -10,6 +10,7 @@
         <table class="min-w-full text-sm">
             <thead class="bg-gray-100 text-gray-600 text-xs uppercase">
                 <tr>
+                    <th class="px-4 py-3 text-left">Foto</th>
                     <th class="px-4 py-3 text-left">Nama</th>
                     <th class="px-4 py-3 text-left">Email</th>
                     <th class="px-4 py-3 text-left">Role</th>
@@ -20,6 +21,7 @@
             <tbody class="divide-y">
                 @foreach ($users as $u)
                     <tr>
+                        <td class="px-4 py-3"><x-avatar :user="$u" /></td>
                         <td class="px-4 py-3">{{ $u->name }}</td>
                         <td class="px-4 py-3">{{ $u->email }}</td>
                         <td class="px-4 py-3 capitalize">{{ $u->role }}</td>
