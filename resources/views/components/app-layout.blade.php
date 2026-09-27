@@ -30,9 +30,13 @@
 
             <div>
 
-                <p class="font-extrabold text-xl leading-tight tracking-wide">Call iHure</p>
+                <p class="font-extrabold text-xl leading-tight tracking-wide">
+                    Call iHure
+                </p>
 
-                <p class="text-xs text-primary-light">Universitas Islam Riau</p>
+                <p class="text-xs text-primary-light">
+                    Universitas Islam Riau
+                </p>
 
             </div>
 
@@ -41,30 +45,33 @@
         <nav class="flex-1 px-3 py-4 space-y-1.5 text-sm">
 
             <a href="{{ route('dashboard') }}"
-
                class="btn-pill flex items-center gap-2 px-4 py-2.5 {{ request()->routeIs('dashboard') ? 'bg-accent text-primary-dark shadow-accent-glow' : 'text-white hover:bg-white/10' }}">
 
-                <img src="{{ asset('images/icons/data.png') }}" alt="Data" class="w-5 h-5 object-contain">
+                <img src="{{ asset('images/icons/data.png') }}"
+                     alt="Data"
+                     class="w-5 h-5 object-contain">
 
                 Data & Follow Up
 
             </a>
 
             <a href="{{ route('mahasiswa.import') }}"
-
                class="btn-pill flex items-center gap-2 px-4 py-2.5 {{ request()->routeIs('mahasiswa.import') ? 'bg-accent text-primary-dark shadow-accent-glow' : 'text-white hover:bg-white/10' }}">
 
-                <img src="{{ asset('images/icons/import.png') }}" alt="Import" class="w-5 h-5 object-contain">
+                <img src="{{ asset('images/icons/import.png') }}"
+                     alt="Import"
+                     class="w-5 h-5 object-contain">
 
                 Import Excel
 
             </a>
 
             <a href="{{ route('statistik') }}"
-
                class="btn-pill flex items-center gap-2 px-4 py-2.5 {{ request()->routeIs('statistik') ? 'bg-accent text-primary-dark shadow-accent-glow' : 'text-white hover:bg-white/10' }}">
 
-                <img src="{{ asset('images/icons/statistik.png') }}" alt="Statistik" class="w-5 h-5 object-contain">
+                <img src="{{ asset('images/icons/statistik.png') }}"
+                     alt="Statistik"
+                     class="w-5 h-5 object-contain">
 
                 Statistik
 
@@ -72,43 +79,49 @@
 
             @if(auth()->user()?->isSuperAdmin())
 
-                <p class="pt-4 pb-1 px-4 text-xs font-bold uppercase tracking-widest text-primary-light">SuperAdmin</p>
+                <p class="pt-4 pb-1 px-4 text-xs font-bold uppercase tracking-widest text-primary-light">
+                    SuperAdmin
+                </p>
 
                 <a href="{{ route('superadmin.users.index') }}"
-
                    class="btn-pill flex items-center gap-2 px-4 py-2.5 {{ request()->routeIs('superadmin.users.*') ? 'bg-accent text-primary-dark shadow-accent-glow' : 'text-white hover:bg-white/10' }}">
 
-                    <img src="{{ asset('images/icons/kelolapengguna.png') }}" alt="Kelola Pengguna" class="w-5 h-5 object-contain">
+                    <img src="{{ asset('images/icons/kelolapengguna.png') }}"
+                         alt="Kelola Pengguna"
+                         class="w-5 h-5 object-contain">
 
                     Kelola Pengguna
 
                 </a>
 
                 <a href="{{ route('superadmin.status-follow-up.index') }}"
-
                    class="btn-pill flex items-center gap-2 px-4 py-2.5 {{ request()->routeIs('superadmin.status-follow-up.*') ? 'bg-accent text-primary-dark shadow-accent-glow' : 'text-white hover:bg-white/10' }}">
 
-                    <img src="{{ asset('images/icons/masterstatus.png') }}" alt="Master Status Follow Up" class="w-5 h-5 object-contain">
+                    <img src="{{ asset('images/icons/masterstatus.png') }}"
+                         alt="Master Status Follow Up"
+                         class="w-5 h-5 object-contain">
 
                     Master Status Follow Up
 
                 </a>
 
                 <a href="{{ route('superadmin.rencana-wisuda.index') }}"
-
                    class="btn-pill flex items-center gap-2 px-4 py-2.5 {{ request()->routeIs('superadmin.rencana-wisuda.*') ? 'bg-accent text-primary-dark shadow-accent-glow' : 'text-white hover:bg-white/10' }}">
 
-                    <img src="{{ asset('images/icons/masterstatus.png') }}" alt="Master Rencana Wisuda" class="w-5 h-5 object-contain">
+                    <img src="{{ asset('images/icons/masterstatus.png') }}"
+                         alt="Master Rencana Wisuda"
+                         class="w-5 h-5 object-contain">
 
                     Master Rencana Wisuda
 
                 </a>
 
                 <a href="{{ route('superadmin.fakultas.index') }}"
-
                    class="btn-pill flex items-center gap-2 px-4 py-2.5 {{ request()->routeIs('superadmin.fakultas.*') ? 'bg-accent text-primary-dark shadow-accent-glow' : 'text-white hover:bg-white/10' }}">
 
-                    <img src="{{ asset('images/icons/masterstatus.png') }}" alt="Master Fakultas & Prodi" class="w-5 h-5 object-contain">
+                    <img src="{{ asset('images/icons/masterstatus.png') }}"
+                         alt="Master Fakultas & Prodi"
+                         class="w-5 h-5 object-contain">
 
                     Master Fakultas & Prodi
 
@@ -120,15 +133,21 @@
 
         <div class="px-5 py-4 border-t border-white/10 text-sm">
 
-            <p class="font-bold">{{ auth()->user()?->name }}</p>
+            <p class="font-bold">
+                {{ auth()->user()?->name }}
+            </p>
 
-            <p class="text-xs text-primary-light mb-2">{{ auth()->user()?->role === 'superadmin' ? 'SuperAdmin' : 'PIC Telemarketing' }}</p>
+            <p class="text-xs text-primary-light mb-2">
+                {{ auth()->user()?->role === 'superadmin' ? 'SuperAdmin' : 'PIC Telemarketing' }}
+            </p>
 
             <form method="POST" action="{{ route('logout') }}">
 
                 @csrf
 
-                <button class="text-xs font-semibold underline decoration-accent text-accent-light hover:text-accent">Keluar</button>
+                <button class="text-xs font-semibold underline decoration-accent text-accent-light hover:text-accent">
+                    Keluar
+                </button>
 
             </form>
 
@@ -136,15 +155,23 @@
 
     </aside>
 
+
     <!-- Content -->
 
     <div class="flex-1 flex flex-col min-w-0">
 
+        <!-- Header -->
+
         <header class="bg-white border-b-2 border-primary-bg px-4 md:px-8 py-4 shadow-sm">
 
-            <h1 class="text-lg font-extrabold text-primary-dark">{{ $title ?? 'Dashboard' }}</h1>
+            <h1 class="text-lg font-extrabold text-primary-dark">
+                {{ $title ?? 'Dashboard' }}
+            </h1>
 
         </header>
+
+
+        <!-- Main Content -->
 
         <main class="flex-1 p-4 md:p-8">
 
@@ -157,6 +184,7 @@
                 </div>
 
             @endif
+
 
             @if ($errors->any())
 
@@ -176,40 +204,108 @@
 
             @endif
 
+
             {{ $slot }}
 
         </main>
+
+
+        <!-- Footer -->
+
+        <footer class="bg-primary-dark border-t border-white/10">
+
+            <div class="min-h-[64px] px-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-2">
+
+                <!-- Copyright -->
+
+                <div class="flex items-center gap-2 text-xs">
+
+                    <span class="text-white/90 font-semibold">
+                        Copyright © Muhammad Al Hafiz {{ date('Y') }}
+                    </span>
+
+                    <span class="text-white/30">
+                        |
+                    </span>
+
+                    <span class="text-white/60">
+                        Call iHure
+                    </span>
+
+                    <span class="text-white/30">
+                        •
+                    </span>
+
+                    <span class="text-white/60">
+                        Universitas Islam Riau
+                    </span>
+
+                </div>
+
+
+                <!-- System Information -->
+
+                <div class="flex items-center gap-2 text-xs">
+
+                    <span class="text-white/40">
+                        Call Information Human Relation
+                    </span>
+
+                    <span class="text-accent font-extrabold tracking-wide">
+                        Call iHure
+                    </span>
+
+                </div>
+
+            </div>
+
+        </footer>
 
     </div>
 
 </div>
 
-<!-- Modal konfirmasi custom (ganti confirm() bawaan browser), dipakai lewat
 
-     window.confirmAction(this, 'pesan...') di atribut onsubmit form manapun -->
+<!-- Modal konfirmasi custom -->
 
-<div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+<!--
+    Ganti confirm() bawaan browser.
+    Dipakai lewat:
+    window.confirmAction(this, 'pesan...')
+    pada atribut onsubmit form.
+-->
+
+<div id="confirm-modal"
+     class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
 
     <div class="modal-overlay absolute inset-0 bg-primary-dark/60"></div>
 
+
     <div class="modal-card relative bg-cream rounded-2xl shadow-lg border-2 border-coral w-full max-w-sm p-6 text-center">
 
-        <div class="text-4xl mb-2">⚠️</div>
+        <div class="text-4xl mb-2">
+            ⚠️
+        </div>
 
-        <p id="confirm-modal-message" class="text-primary-dark font-semibold mb-6"></p>
+
+        <p id="confirm-modal-message"
+           class="text-primary-dark font-semibold mb-6">
+        </p>
+
 
         <div class="flex gap-3 justify-center">
 
-            <button type="button" id="confirm-modal-cancel"
-
+            <button type="button"
+                    id="confirm-modal-cancel"
                     class="btn-pill px-5 py-2 border-2 border-primary text-primary-dark hover:bg-primary-bg">
 
                 Batal
 
             </button>
 
-            <button type="button" id="confirm-modal-ok"
 
+            <button type="button"
+                    id="confirm-modal-ok"
                     class="btn-pill px-5 py-2 bg-coral text-white shadow-coral-glow hover:bg-coral-dark">
 
                 Ya, Hapus
@@ -221,6 +317,7 @@
     </div>
 
 </div>
+
 
 </body>
 
