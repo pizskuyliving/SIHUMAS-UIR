@@ -35,7 +35,12 @@
                     @forelse ($leaderboard as $i => $row)
                         <tr>
                             <td class="px-4 py-3">#{{ $i + 1 }}</td>
-                            <td class="px-4 py-3 font-medium">{{ $row->pic?->name ?? '(Akun dihapus)' }}</td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-3">
+                                    <x-avatar :user="$row->pic" class="w-8 h-8 text-xs" />
+                                    <span class="font-medium">{{ $row->pic?->name ?? '(Akun dihapus)' }}</span>
+                                </div>
+                            </td>
                             <td class="px-4 py-3">{{ $row->total }}</td>
                             <td class="px-4 py-3">
                                 <a href="{{ route('kinerja.index', ['pic_id' => $row->pic_id]) }}"
@@ -61,9 +66,12 @@
         </script>
 
         <div class="flex items-center justify-between mb-4">
-            <div>
-                <p class="text-sm text-gray-500">Menampilkan kinerja:</p>
-                <p class="font-semibold text-lg">{{ $detail['picUser']?->name ?? '-' }}</p>
+            <div class="flex items-center gap-3">
+                <x-avatar :user="$detail['picUser']" class="w-12 h-12 text-lg" />
+                <div>
+                    <p class="text-sm text-gray-500">Menampilkan kinerja:</p>
+                    <p class="font-semibold text-lg">{{ $detail['picUser']?->name ?? '-' }}</p>
+                </div>
             </div>
             @if ($isSuperAdmin)
                 <a href="{{ route('kinerja.index') }}" class="text-sm text-emerald-700 underline">&larr; Kembali ke leaderboard</a>
@@ -149,6 +157,9 @@
                     options: {
                         indexAxis: 'y',
                         scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                        plugins: {
+                            datalabels: window.percentageDataLabels({ anchor: 'end', align: 'end', color: '#0369a1', textStrokeWidth: 0 }),
+                        },
                     },
                 });
 
@@ -160,6 +171,9 @@
                             data: rencanaData,
                             backgroundColor: ['#047857', '#f59e0b', '#dc2626', '#9ca3af'],
                         }],
+                    },
+                    options: {
+                        plugins: { datalabels: window.percentageDataLabels() },
                     },
                 });
 
@@ -175,6 +189,9 @@
                     },
                     options: {
                         scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                        plugins: {
+                            datalabels: window.percentageDataLabels({ anchor: 'end', align: 'top', color: '#047857', textStrokeWidth: 0 }),
+                        },
                     },
                 });
             });

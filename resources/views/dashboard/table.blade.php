@@ -8,12 +8,20 @@
                 <button class="bg-gray-800 text-white text-sm px-4 rounded-lg hover:bg-gray-900">Cari</button>
             </form>
             <a href="{{ route('mahasiswa.import') }}"
-            class="inline-flex items-center gap-2 bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg hover:bg-emerald-800">
-                <img src="{{ asset('images/icons/import.png') }}" 
-                    alt="Import Excel" 
-                    class="w-5 h-5 object-contain">
-                Import Excel
+               class="inline-flex items-center gap-2 bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg hover:bg-emerald-800 whitespace-nowrap">
+                ⬆️ Import Excel
             </a>
+            @if (auth()->user()?->isSuperAdmin() && isset($deleteAllUrl) && $deleteAllTotal > 0)
+                <form method="POST" action="{{ $deleteAllUrl }}"
+                      onsubmit="return confirmAction(this, 'Hapus SEMUA {{ $deleteAllTotal }} data di halaman ini (bukan cuma yang tampil di layar)? Follow up-nya juga ikut terhapus. Tindakan ini TIDAK BISA dibatalkan.')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 bg-red-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-red-700 whitespace-nowrap">
+                        🗑️ Hapus Semua ({{ $deleteAllTotal }})
+                    </button>
+                </form>
+            @endif
         </div>
     </div>
 

@@ -156,7 +156,7 @@
             <div class="flex items-center gap-2 text-xs">
 
                 <span class="text-white/90 font-semibold">
-                    Copyright © Muhammad Al Hafiz {{ date('Y') }}
+                    Copyright © Telemarketing {{ date('Y') }}
                 </span>
 
                 <span class="text-white/30">

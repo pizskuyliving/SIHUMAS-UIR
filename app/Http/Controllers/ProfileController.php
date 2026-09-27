@@ -17,17 +17,29 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = $request->user();
+        $isSuperAdmin = $user->isSuperAdmin();
 
-        $validated = $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
             'photo' => 'nullable|image|max:2048', // max 2MB
             'current_password' => 'nullable|required_with:password|current_password',
             'password' => ['nullable', 'confirmed', Password::min(8)],
-        ]);
+        ];
+
+        // Email hanya boleh diubah SuperAdmin. PIC tidak divalidasi/diproses
+        // sama sekali untuk field email, meskipun dikirim lewat request
+        // (jaga-jaga kalau ada yang mengakali form di HTML).
+        if ($isSuperAdmin) {
+            $rules['email'] = ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)];
+        }
+
+        $validated = $request->validate($rules);
 
         $user->name = $validated['name'];
-        $user->email = $validated['email'];
+
+        if ($isSuperAdmin) {
+            $user->email = $validated['email'];
+        }
 
         if ($request->hasFile('photo')) {
             // Simpan langsung ke public/avatars (bukan lewat storage:link) supaya

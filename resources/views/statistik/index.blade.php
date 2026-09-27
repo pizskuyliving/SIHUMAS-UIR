@@ -77,6 +77,9 @@
                         backgroundColor: ['#047857', '#f59e0b', '#dc2626', '#9ca3af'],
                     }],
                 },
+                options: {
+                    plugins: { datalabels: window.percentageDataLabels() },
+                },
             });
 
             new Chart(document.getElementById('chartStatus'), {
@@ -91,6 +94,9 @@
                 },
                 options: {
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    plugins: {
+                        datalabels: window.percentageDataLabels({ anchor: 'end', align: 'top', color: '#047857', textStrokeWidth: 0 }),
+                    },
                 },
             });
         });

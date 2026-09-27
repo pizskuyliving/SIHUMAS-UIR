@@ -36,6 +36,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/mahasiswa/{mahasiswa}', [DashboardController::class, 'destroy'])->name('mahasiswa.destroy');
     Route::delete('/mahasiswa-bulk', [DashboardController::class, 'destroyBulk'])->name('mahasiswa.destroy-bulk');
 
+    // Hapus SEMUA data sekaligus dalam 1 Prodi / data legacy (khusus SuperAdmin)
+    Route::middleware('superadmin')->group(function () {
+        Route::delete('/mahasiswa/prodi/{prodi}/hapus-semua', [DashboardController::class, 'destroyAllProdi'])
+            ->name('mahasiswa.destroy-all-prodi');
+        Route::delete('/mahasiswa/legacy/hapus-semua', [DashboardController::class, 'destroyAllLegacy'])
+            ->name('mahasiswa.destroy-all-legacy');
+    });
+
     // Import Excel (PIC & SuperAdmin boleh upload)
     Route::get('/mahasiswa/import', [MahasiswaImportController::class, 'create'])->name('mahasiswa.import');
     Route::post('/mahasiswa/import', [MahasiswaImportController::class, 'store'])->name('mahasiswa.import.store');

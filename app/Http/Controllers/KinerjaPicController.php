@@ -30,7 +30,7 @@ class KinerjaPicController extends Controller
             $leaderboard = FollowUp::selectRaw('pic_id, count(*) as total')
                 ->whereNotNull('pic_id')
                 ->groupBy('pic_id')
-                ->with('pic:id,name')
+                ->with('pic:id,name,photo_path')
                 ->orderByDesc('total')
                 ->get();
         }

@@ -43,6 +43,8 @@ class DashboardController extends Controller
         return $this->renderTabel($request, $query, [
             'title' => $prodi->fakultas->nama . ' - ' . $prodi->nama,
             'backUrl' => route('dashboard'),
+            'deleteAllUrl' => route('mahasiswa.destroy-all-prodi', $prodi),
+            'deleteAllTotal' => Mahasiswa::where('prodi_id', $prodi->id)->count(),
         ]);
     }
 
@@ -59,6 +61,8 @@ class DashboardController extends Controller
         return $this->renderTabel($request, $query, [
             'title' => 'Data Belum Dikategorikan (Fakultas/Prodi lama)',
             'backUrl' => route('dashboard'),
+            'deleteAllUrl' => route('mahasiswa.destroy-all-legacy'),
+            'deleteAllTotal' => Mahasiswa::whereNull('prodi_id')->count(),
         ]);
     }
 
@@ -138,5 +142,29 @@ class DashboardController extends Controller
         $jumlah = Mahasiswa::whereIn('id', $validated['mahasiswa_ids'])->delete();
 
         return back()->with('status', "{$jumlah} data berhasil dihapus.");
+    }
+
+    /**
+     * Hapus SEMUA data mahasiswa dalam 1 Prodi sekaligus (lintas halaman,
+     * bukan cuma 20 baris yang sedang tampil). Khusus SuperAdmin.
+     */
+    public function destroyAllProdi(Prodi $prodi)
+    {
+        $jumlah = Mahasiswa::where('prodi_id', $prodi->id)->delete();
+
+        return redirect()->route('dashboard.prodi', $prodi)
+            ->with('status', "{$jumlah} data di prodi ini berhasil dihapus semua.");
+    }
+
+    /**
+     * Hapus SEMUA data mahasiswa yang belum dikategorikan Fakultas/Prodi
+     * (data lama) sekaligus. Khusus SuperAdmin.
+     */
+    public function destroyAllLegacy()
+    {
+        $jumlah = Mahasiswa::whereNull('prodi_id')->delete();
+
+        return redirect()->route('dashboard.legacy')
+            ->with('status', "{$jumlah} data lama berhasil dihapus semua.");
     }
 }

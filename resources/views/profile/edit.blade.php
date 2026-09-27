@@ -21,8 +21,14 @@
 
             <div>
                 <label class="block text-sm font-medium mb-1">Email</label>
-                <input type="email" name="email" value="{{ old('email', $user->email) }}" required
-                       class="w-full rounded-lg border-gray-300 text-sm">
+                @if ($user->isSuperAdmin())
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required
+                           class="w-full rounded-lg border-gray-300 text-sm">
+                @else
+                    <input type="email" value="{{ $user->email }}" disabled
+                           class="w-full rounded-lg border-gray-200 bg-gray-100 text-sm text-gray-500">
+                    <p class="text-xs text-gray-400 mt-1">Hanya SuperAdmin yang bisa mengubah email. Hubungi SuperAdmin kalau perlu diganti.</p>
+                @endif
             </div>
 
             <hr class="border-dashed">

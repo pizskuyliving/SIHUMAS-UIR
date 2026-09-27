@@ -1,8 +1,35 @@
 import Alpine from 'alpinejs';
 import Chart from 'chart.js/auto';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 window.Alpine = Alpine;
 window.Chart = Chart;
+
+// Daftarkan plugin datalabels secara global, supaya SEMUA chart yang dibuat
+// lewat `new Chart(...)` otomatis bisa menampilkan label (dipakai untuk
+// menampilkan persentase di setiap grafik pie/bar).
+Chart.register(ChartDataLabels);
+
+/**
+ * Konfigurasi datalabels siap pakai untuk menampilkan persentase dari total
+ * nilai dalam 1 dataset. Tinggal di-spread ke plugins.datalabels tiap chart:
+ *   plugins: { datalabels: window.percentageDataLabels() }
+ */
+window.percentageDataLabels = function (options = {}) {
+    return {
+        color: '#fff',
+        font: { weight: 'bold', size: 11 },
+        textStrokeColor: 'rgba(0,0,0,0.45)',
+        textStrokeWidth: 3,
+        formatter: (value, ctx) => {
+            const data = ctx.chart.data.datasets[ctx.datasetIndex].data;
+            const total = data.reduce((a, b) => a + (Number(b) || 0), 0);
+            if (!total || !value) return '';
+            return (value / total * 100).toFixed(1).replace('.0', '') + '%';
+        },
+        ...options,
+    };
+};
 
 /**
  * Komponen Alpine untuk dropdown Fakultas -> Prodi yang saling terhubung.
