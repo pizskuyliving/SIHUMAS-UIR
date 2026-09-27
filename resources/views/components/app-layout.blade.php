@@ -10,6 +10,8 @@
 
     <title>{{ $title ?? 'SIHUMAS' }} - SIHUMAS UIR</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('images/LOGO.png') }}">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
@@ -28,7 +30,7 @@
 
             <div>
 
-                <p class="font-extrabold text-xl leading-tight tracking-wide">SI-HUMAS</p>
+                <p class="font-extrabold text-xl leading-tight tracking-wide">Call iHure</p>
 
                 <p class="text-xs text-primary-light">Universitas Islam Riau</p>
 

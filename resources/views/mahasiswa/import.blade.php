@@ -24,7 +24,7 @@
                     <label class="block text-sm font-medium mb-1">Fakultas</label>
                     <select x-model="selectedFakultasId" required
                             class="w-full rounded-lg border-gray-300 text-sm">
-                        <option value="">- pilih fakultas -</option>
+                        <option value="">- Pilih Fakultas -</option>
                         <template x-for="f in fakultasList" :key="f.id">
                             <option :value="f.id" x-text="f.nama"></option>
                         </template>

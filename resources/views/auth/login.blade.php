@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SIHUMAS UIR</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/LOGO.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-primary-dark min-h-screen flex items-center justify-center px-4">
     <div class="bg-cream rounded-2xl shadow-lg border-2 border-primary-dark w-full max-w-sm p-8">
         <div class="text-center mb-6">
             <img src="{{ asset('images/LOGO.png') }}" alt="Logo UIR" class="h-16 w-16 object-contain mx-auto mb-2">
-            <h1 class="text-2xl font-extrabold text-primary-dark tracking-wide">SI-HUMAS</h1>
+            <h1 class="text-2xl font-extrabold text-primary-dark tracking-wide">Call iHure</h1>
             <div class="w-12 h-1.5 bg-accent rounded-full mx-auto my-2"></div>
+            <p class="text-sm text-primary">Call Information Human Relation</p>
             <p class="text-sm text-primary">Universitas Islam Riau</p>
         </div>
 
