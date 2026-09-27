@@ -19,7 +19,7 @@
                     <button class="text-xs underline text-emerald-700">Simpan</button>
                 </form>
                 <form method="POST" action="{{ route('superadmin.rencana-wisuda.destroy', $item) }}"
-                      onsubmit="return confirm('Hapus pilihan ini?')" class="ml-2">
+                      onsubmit="return confirmAction(this, 'Hapus pilihan ini?')" class="ml-2">
                     @csrf @method('DELETE')
                     <button class="text-xs underline text-red-600">Hapus</button>
                 </form>

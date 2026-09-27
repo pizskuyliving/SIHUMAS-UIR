@@ -37,7 +37,7 @@
                             </form>
                             @if ($u->id !== auth()->id())
                                 <form action="{{ route('superadmin.users.destroy', $u) }}" method="POST" class="inline"
-                                      onsubmit="return confirm('Hapus akun ini?')">
+                                      onsubmit="return confirmAction(this, 'Hapus akun ini?')">
                                     @csrf @method('DELETE')
                                     <button class="text-xs underline text-red-600">Hapus</button>
                                 </form>

@@ -2,3 +2,73 @@
 @plugin "@tailwindcss/forms";
 
 [x-cloak] { display: none !important; }
+
+/*
+ * SIHUMAS UIR — token desain diterjemahkan dari "Flip7 Design System"
+ * (retro-playful, teal-coral-gold) ke Tailwind CSS v4.
+ * Dengan token di sini, semua utility Tailwind otomatis tersedia:
+ * bg-primary, text-primary-dark, border-coral, shadow-card, dst.
+ */
+@theme {
+    /* Teal — warna utama UI (sidebar, header, badge, progress) */
+    --color-primary: #2BA8A2;
+    --color-primary-light: #3CC4BD;
+    --color-primary-dark: #1E8C86;
+    --color-primary-bg: #E8F6F5;
+
+    /* Gold — untuk CTA utama, highlight, badge pencapaian */
+    --color-accent: #FFD23F;
+    --color-accent-light: #FFE47A;
+    --color-accent-dark: #E6B800;
+
+    /* Coral — untuk peringatan, aksi hapus/destructive, energi */
+    --color-coral: #EF6C4A;
+    --color-coral-light: #FF8A6A;
+    --color-coral-dark: #D45233;
+
+    /* Netral & status */
+    --color-cream: #FFF8E7;
+    --color-sky: #5DADE2;
+    --color-surface: #EFF8F7;
+    --color-success: #27AE60;
+    --color-error: #E74C3C;
+
+    /* Glow shadow ala Flip7 — dipakai lewat shadow-card, shadow-accent-glow, dst */
+    --shadow-card: 0 4px 20px rgba(43, 168, 162, 0.10);
+    --shadow-teal-glow: 0 4px 20px rgba(43, 168, 162, 0.30);
+    --shadow-accent-glow: 0 4px 20px rgba(255, 210, 63, 0.40);
+    --shadow-coral-glow: 0 4px 20px rgba(239, 108, 74, 0.35);
+    --shadow-sky-glow: 0 4px 16px rgba(93, 173, 226, 0.30);
+}
+
+/* Tombol pill ala Flip7: bulat penuh, bounce halus saat ditekan */
+.btn-pill {
+    border-radius: 999px;
+    font-weight: 800;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.btn-pill:active {
+    transform: scale(0.96);
+}
+
+/*
+ * Animasi smooth untuk modal konfirmasi (#confirm-modal): overlay fade-in,
+ * kartu muncul dari sedikit lebih kecil + turun tipis lalu ke posisi normal.
+ * Dikontrol lewat class .modal-open yang ditambahkan/dihapus di app.js.
+ */
+#confirm-modal .modal-overlay {
+    opacity: 0;
+    transition: opacity 220ms ease;
+}
+#confirm-modal .modal-card {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+    transition: opacity 220ms ease, transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#confirm-modal.modal-open .modal-overlay {
+    opacity: 1;
+}
+#confirm-modal.modal-open .modal-card {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}

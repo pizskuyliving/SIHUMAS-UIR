@@ -23,7 +23,7 @@
              supaya tidak dipindah paksa oleh browser (lihat catatan di form per-baris
              di bawah). Input tersembunyi dibuat otomatis dari 'selected' lewat x-for. --}}
         <form id="bulk-delete-form" method="POST" action="{{ route('mahasiswa.destroy-bulk') }}"
-              onsubmit="return confirm('Hapus ' + document.querySelectorAll('#bulk-delete-form input[type=hidden][name=\'mahasiswa_ids[]\']').length + ' data terpilih? Follow up-nya juga ikut terhapus. Tindakan ini tidak bisa dibatalkan.')"
+              onsubmit="return confirmAction(this, 'Hapus ' + document.querySelectorAll('#bulk-delete-form input[type=hidden][name=\'mahasiswa_ids[]\']').length + ' data terpilih? Follow up-nya juga ikut terhapus. Tindakan ini tidak bisa dibatalkan.')"
               class="mb-3 flex items-center gap-3" x-show="selected.length > 0" x-cloak>
             @csrf
             @method('DELETE')
@@ -139,7 +139,7 @@
                                 </button>
 
                                 <form method="POST" action="{{ route('mahasiswa.destroy', $m) }}" class="inline"
-                                      onsubmit="return confirm('Hapus data {{ addslashes($m->nama_mahasiswa) }}? Follow up-nya juga akan terhapus. Tindakan ini tidak bisa dibatalkan.')">
+                                      onsubmit="return confirmAction(this, 'Hapus data {{ addslashes($m->nama_mahasiswa) }}? Follow up-nya juga akan terhapus. Tindakan ini tidak bisa dibatalkan.')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" x-show="!editing"

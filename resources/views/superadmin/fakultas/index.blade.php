@@ -25,7 +25,7 @@
                             <span x-show="open">Tutup</span>
                         </button>
                         <form method="POST" action="{{ route('superadmin.fakultas.destroy', $fakultas) }}"
-                              onsubmit="return confirm('Hapus fakultas ini beserta semua prodinya?')">
+                              onsubmit="return confirmAction(this, 'Hapus fakultas ini beserta semua prodinya?')">
                             @csrf @method('DELETE')
                             <button class="text-xs underline text-red-600">Hapus</button>
                         </form>
@@ -42,7 +42,7 @@
                                 <button class="text-xs underline text-emerald-700">Simpan</button>
                             </form>
                             <form method="POST" action="{{ route('superadmin.prodi.destroy', $prodi) }}"
-                                  onsubmit="return confirm('Hapus prodi ini?')" class="ml-2">
+                                  onsubmit="return confirmAction(this, 'Hapus prodi ini?')" class="ml-2">
                                 @csrf @method('DELETE')
                                 <button class="text-xs underline text-red-600">Hapus</button>
                             </form>
