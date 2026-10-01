@@ -10,7 +10,7 @@
             Format file Excel yang diterima: kolom <strong>No, Nama Mahasiswa, NPM, Nomor kontak</strong>
             (dan opsional <strong>Nomor kontak 2</strong>) pada baris pertama sebagai header. Data akan
             otomatis masuk ke Fakultas & Prodi yang dipilih di bawah; jika NPM sudah ada, data lama akan
-            diperbarui (tidak duplikat).
+            diperbarui (tidak duplikat). Anda akan diperlihatkan PREVIEW dulu sebelum data benar-benar tersimpan.
         </p>
 
         @if ($fakultasList->isEmpty())
@@ -19,7 +19,7 @@
                 <strong>Master Fakultas & Prodi</strong>.
             </div>
         @else
-            <form method="POST" action="{{ route('mahasiswa.import.store') }}" enctype="multipart/form-data" class="space-y-4">
+            <form method="POST" action="{{ route('mahasiswa.import.preview') }}" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div>
                     <label class="block text-sm font-medium mb-1">Fakultas</label>
@@ -53,7 +53,7 @@
                 </div>
 
                 <button class="neu-btn-primary text-sm px-5 py-2">
-                    Upload & Proses
+                    Upload & Lihat Preview
                 </button>
             </form>
         @endif

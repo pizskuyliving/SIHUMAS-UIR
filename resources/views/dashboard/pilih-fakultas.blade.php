@@ -1,4 +1,11 @@
 <x-app-layout title="Data & Follow Up Mahasiswa">
+    @if ($notifikasi)
+        <div class="neu-card p-4 mb-6 flex items-center gap-3" style="border-left: 4px solid var(--color-accent-dark);">
+            <span class="text-2xl">🔔</span>
+            <p class="text-sm text-primary-dark font-medium">{{ $notifikasi }}</p>
+        </div>
+    @endif
+
     <p class="text-sm text-gray-600 mb-6">
         Pilih Fakultas untuk melihat daftar Prodi-nya, lalu pilih Prodi untuk membuka data & follow up mahasiswa di prodi tersebut.
     </p>

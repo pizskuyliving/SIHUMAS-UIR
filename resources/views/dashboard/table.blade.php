@@ -9,12 +9,12 @@
             </form>
             <a href="{{ route('mahasiswa.import') }}"
                class="inline-flex items-center gap-2 neu-btn-primary text-sm px-4 py-2 whitespace-nowrap">
-                ⬆️ Import Excel
+                <x-icon name="upload" class="w-4 h-4" /> Import Excel
             </a>
             @if (isset($exportUrl))
                 <a href="{{ $exportUrl }}"
                    class="inline-flex items-center gap-2 neu-btn-primary text-sm px-4 py-2 whitespace-nowrap">
-                    ⬇️ Unduh Excel
+                    <x-icon name="download" class="w-4 h-4" /> Unduh Excel
                 </a>
             @endif
             @if (auth()->user()?->isSuperAdmin() && isset($deleteAllUrl) && $deleteAllTotal > 0)
@@ -24,7 +24,7 @@
                     @method('DELETE')
                     <button type="submit"
                             class="inline-flex items-center gap-2 neu-btn-danger text-sm px-4 py-2 whitespace-nowrap">
-                        🗑️ Hapus Semua ({{ $deleteAllTotal }})
+                        <x-icon name="trash" class="w-4 h-4" /> Hapus Semua ({{ $deleteAllTotal }})
                     </button>
                 </form>
             @endif

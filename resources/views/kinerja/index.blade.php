@@ -1,13 +1,13 @@
-<x-app-layout :title="$isSuperAdmin ? 'Kinerja PIC' : 'Kinerja Saya'">
+<x-app-layout :title="$canManageTeam ? 'Kinerja PIC' : 'Kinerja Saya'">
 
     <div class="flex items-center justify-end mb-4 no-print">
         <button type="button" onclick="window.print()"
                 class="inline-flex items-center gap-2 neu-btn text-sm px-4 py-2">
-            🖨️ Cetak / Simpan PDF
+            <x-icon name="printer" class="w-4 h-4" /> Cetak / Simpan PDF
         </button>
     </div>
 
-    @if ($isSuperAdmin)
+    @if ($canManageTeam)
         {{-- SuperAdmin: pilih PIC mana yang mau dilihat --}}
         <div class="neu-card p-4 sm:p-5 mb-6 no-print">
             <form method="GET" class="flex flex-col sm:flex-row sm:items-end gap-3">
@@ -27,7 +27,7 @@
     @endif
 
     {{-- ==================== LEADERBOARD (SuperAdmin, belum pilih PIC) ==================== --}}
-    @if ($isSuperAdmin && ! $selectedPicId)
+    @if ($canManageTeam && ! $selectedPicId)
         {{-- 3) Perbandingan visual antar PIC --}}
         @if ($leaderboard->count() > 1)
             <div class="neu-card p-4 sm:p-6 mb-6">
@@ -124,14 +124,14 @@
                     <p class="font-semibold text-lg break-words">{{ $detail['picUser']?->name ?? '-' }}</p>
                 </div>
             </div>
-            @if ($isSuperAdmin)
+            @if ($canManageTeam)
                 <a href="{{ route('kinerja.index') }}" class="text-sm text-emerald-700 underline whitespace-nowrap no-print">&larr; Kembali ke leaderboard</a>
             @endif
         </div>
 
         <div x-data="fakultasPicker('{{ $detail['selectedFakultasId'] }}')" class="neu-card p-4 sm:p-5 mb-6 no-print">
             <form method="GET" class="grid sm:grid-cols-2 xl:grid-cols-5 gap-3 items-end">
-                @if ($isSuperAdmin)
+                @if ($canManageTeam)
                     <input type="hidden" name="pic_id" value="{{ $selectedPicId }}">
                 @endif
                 <div>

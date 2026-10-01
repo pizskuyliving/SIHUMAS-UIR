@@ -17,18 +17,20 @@ class KinerjaPicController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $isSuperAdmin = $user->isSuperAdmin();
+        // Koordinator & SuperAdmin boleh memantau semua PIC; PIC biasa cuma
+        // bisa lihat datanya sendiri.
+        $canManageTeam = $user->isAtLeastKoordinator();
 
         // PIC hanya boleh melihat datanya sendiri; parameter pic_id dari
-        // request diabaikan kalau bukan SuperAdmin, supaya tidak bisa
-        // mengintip data PIC lain lewat URL.
-        $picId = $isSuperAdmin ? $request->input('pic_id') : $user->id;
+        // request diabaikan kalau bukan Koordinator/SuperAdmin, supaya tidak
+        // bisa mengintip data PIC lain lewat URL.
+        $picId = $canManageTeam ? $request->input('pic_id') : $user->id;
 
-        $picList = $isSuperAdmin ? User::orderBy('name')->get(['id', 'name', 'role']) : collect();
+        $picList = $canManageTeam ? User::orderBy('name')->get(['id', 'name', 'role']) : collect();
 
-        // ==== Leaderboard: total follow up per PIC (hanya untuk SuperAdmin, saat belum memilih PIC tertentu) ====
+        // ==== Leaderboard: total follow up per PIC (hanya utk Koordinator/SuperAdmin, saat belum memilih PIC tertentu) ====
         $leaderboard = collect();
-        if ($isSuperAdmin && ! $picId) {
+        if ($canManageTeam && ! $picId) {
             $leaderboard = FollowUp::selectRaw('pic_id, count(*) as total')
                 ->whereNotNull('pic_id')
                 ->groupBy('pic_id')
@@ -140,7 +142,7 @@ class KinerjaPicController extends Controller
         }
 
         return view('kinerja.index', [
-            'isSuperAdmin' => $isSuperAdmin,
+            'canManageTeam' => $canManageTeam,
             'picList' => $picList,
             'selectedPicId' => $picId,
             'leaderboard' => $leaderboard,

@@ -6,10 +6,14 @@ use App\Http\Controllers\KinerjaPicController;
 use App\Http\Controllers\MahasiswaImportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistikController;
+use App\Http\Controllers\SuperAdmin\ActivityLogController;
 use App\Http\Controllers\SuperAdmin\FakultasController;
+use App\Http\Controllers\SuperAdmin\ImportLogController;
+use App\Http\Controllers\SuperAdmin\MasterDataController;
 use App\Http\Controllers\SuperAdmin\PertimbanganController;
 use App\Http\Controllers\SuperAdmin\RencanaWisudaController;
 use App\Http\Controllers\SuperAdmin\StatusFollowUpController;
+use App\Http\Controllers\SuperAdmin\TrashController;
 use App\Http\Controllers\SuperAdmin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,8 +51,9 @@ Route::middleware('auth')->group(function () {
             ->name('mahasiswa.destroy-all-legacy');
     });
 
-    // Import Excel (PIC & SuperAdmin boleh upload)
+    // Import Excel (PIC & SuperAdmin boleh upload) - 2 langkah: preview dulu, baru simpan
     Route::get('/mahasiswa/import', [MahasiswaImportController::class, 'create'])->name('mahasiswa.import');
+    Route::post('/mahasiswa/import/preview', [MahasiswaImportController::class, 'preview'])->name('mahasiswa.import.preview');
     Route::post('/mahasiswa/import', [MahasiswaImportController::class, 'store'])->name('mahasiswa.import.store');
 
     // Statistik - bisa dilihat semua user
@@ -58,35 +63,46 @@ Route::middleware('auth')->group(function () {
     // (pembatasan aksesnya ditangani di dalam KinerjaPicController, bukan di sini)
     Route::get('/kinerja', [KinerjaPicController::class, 'index'])->name('kinerja.index');
 
-    // ==== Khusus SuperAdmin ====
-    Route::middleware('superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {
+    // ==== Koordinator & SuperAdmin ====
+    Route::middleware('koordinator')->prefix('superadmin')->name('superadmin.')->group(function () {
+        Route::get('/master-data', [MasterDataController::class, 'index'])->name('master-data.index');
+
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        // Koordinator cuma boleh bikin akun PIC (dipaksa di controller, bukan di sini)
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
-        Route::get('/status-follow-up', [StatusFollowUpController::class, 'index'])->name('status-follow-up.index');
         Route::post('/status-follow-up', [StatusFollowUpController::class, 'store'])->name('status-follow-up.store');
         Route::patch('/status-follow-up/{statusFollowUp}', [StatusFollowUpController::class, 'update'])->name('status-follow-up.update');
         Route::delete('/status-follow-up/{statusFollowUp}', [StatusFollowUpController::class, 'destroy'])->name('status-follow-up.destroy');
 
-        Route::get('/rencana-wisuda', [RencanaWisudaController::class, 'index'])->name('rencana-wisuda.index');
         Route::post('/rencana-wisuda', [RencanaWisudaController::class, 'store'])->name('rencana-wisuda.store');
         Route::patch('/rencana-wisuda/{rencanaWisuda}', [RencanaWisudaController::class, 'update'])->name('rencana-wisuda.update');
         Route::delete('/rencana-wisuda/{rencanaWisuda}', [RencanaWisudaController::class, 'destroy'])->name('rencana-wisuda.destroy');
 
-        Route::get('/pertimbangan', [PertimbanganController::class, 'index'])->name('pertimbangan.index');
         Route::post('/pertimbangan', [PertimbanganController::class, 'store'])->name('pertimbangan.store');
         Route::patch('/pertimbangan/{pertimbangan}', [PertimbanganController::class, 'update'])->name('pertimbangan.update');
         Route::delete('/pertimbangan/{pertimbangan}', [PertimbanganController::class, 'destroy'])->name('pertimbangan.destroy');
 
-        Route::get('/fakultas', [FakultasController::class, 'index'])->name('fakultas.index');
         Route::post('/fakultas', [FakultasController::class, 'store'])->name('fakultas.store');
         Route::patch('/fakultas/{fakultas}', [FakultasController::class, 'update'])->name('fakultas.update');
         Route::delete('/fakultas/{fakultas}', [FakultasController::class, 'destroy'])->name('fakultas.destroy');
         Route::post('/fakultas/{fakultas}/prodi', [FakultasController::class, 'storeProdi'])->name('fakultas.prodi.store');
         Route::patch('/prodi/{prodi}', [FakultasController::class, 'updateProdi'])->name('prodi.update');
         Route::delete('/prodi/{prodi}', [FakultasController::class, 'destroyProdi'])->name('prodi.destroy');
+
+        Route::get('/sampah', [TrashController::class, 'index'])->name('sampah.index');
+        Route::post('/sampah/{id}/pulihkan', [TrashController::class, 'restore'])->name('sampah.restore');
+
+        Route::get('/aktivitas', [ActivityLogController::class, 'index'])->name('aktivitas.index');
+        Route::get('/riwayat-import', [ImportLogController::class, 'index'])->name('riwayat-import.index');
+    });
+
+    // ==== Khusus SuperAdmin (aksi berisiko tinggi / struktural) ====
+    Route::middleware('superadmin')->prefix('superadmin')->name('superadmin.')->group(function () {
+        Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+        Route::delete('/sampah/{id}', [TrashController::class, 'forceDestroy'])->name('sampah.force-destroy');
     });
 });

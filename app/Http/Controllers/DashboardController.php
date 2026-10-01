@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\MahasiswaExport;
+use App\Models\ActivityLog;
 use App\Models\Fakultas;
 use App\Models\FollowUp;
 use App\Models\Mahasiswa;
@@ -20,7 +21,7 @@ class DashboardController extends Controller
     /**
      * Halaman awal Data & Follow Up: pilih Fakultas dulu, lalu Prodi.
      */
-    public function index()
+    public function index(Request $request)
     {
         $fakultasList = Fakultas::withCount('prodis')
             ->with(['prodis' => function ($q) {
@@ -31,7 +32,27 @@ class DashboardController extends Controller
 
         $jumlahTanpaProdi = Mahasiswa::whereNull('prodi_id')->count();
 
-        return view('dashboard.pilih-fakultas', compact('fakultasList', 'jumlahTanpaProdi'));
+        // ==== Notifikasi: hal yang perlu perhatian, beda isi utk PIC vs Koordinator/SuperAdmin ====
+        $user = $request->user();
+        if ($user->isAtLeastKoordinator()) {
+            $jumlahBelumDisentuh = Mahasiswa::whereDoesntHave('followUp')->count();
+            $notifikasi = $jumlahBelumDisentuh > 0
+                ? "{$jumlahBelumDisentuh} mahasiswa belum pernah di-follow up oleh PIC manapun."
+                : null;
+        } else {
+            $jumlahBelumLengkap = FollowUp::where('pic_id', $user->id)
+                ->where(function ($q) {
+                    $q->whereNull('status_follow_up_id')
+                      ->orWhereNull('rencana_wisuda_id')
+                      ->orWhereNull('pertimbangan_id');
+                })
+                ->count();
+            $notifikasi = $jumlahBelumLengkap > 0
+                ? "Anda punya {$jumlahBelumLengkap} follow up yang belum lengkap. Lihat di menu Kinerja Saya."
+                : null;
+        }
+
+        return view('dashboard.pilih-fakultas', compact('fakultasList', 'jumlahTanpaProdi', 'notifikasi'));
     }
 
     /**
@@ -154,23 +175,28 @@ class DashboardController extends Controller
             ]
         );
 
+        ActivityLog::catat('update_follow_up', "Mengisi follow up untuk \"{$mahasiswa->nama_mahasiswa}\" ({$mahasiswa->npm}).");
+
         return back()->with('status', 'Data follow up berhasil disimpan.');
     }
 
     /**
-     * Hapus data mahasiswa (beserta follow up-nya, lewat cascade delete).
+     * Hapus data mahasiswa (soft delete - bisa dipulihkan lewat menu Sampah).
      * Boleh dilakukan PIC maupun SuperAdmin.
      */
     public function destroy(Mahasiswa $mahasiswa)
     {
         $nama = $mahasiswa->nama_mahasiswa;
+        $npm = $mahasiswa->npm;
         $mahasiswa->delete();
 
-        return back()->with('status', "Data \"{$nama}\" berhasil dihapus.");
+        ActivityLog::catat('hapus_mahasiswa', "Memindahkan data \"{$nama}\" ({$npm}) ke Sampah.");
+
+        return back()->with('status', "Data \"{$nama}\" dipindahkan ke Sampah (bisa dipulihkan SuperAdmin).");
     }
 
     /**
-     * Hapus banyak data mahasiswa sekaligus (dipilih lewat checkbox).
+     * Hapus banyak data mahasiswa sekaligus (dipilih lewat checkbox), soft delete.
      * Boleh dilakukan PIC maupun SuperAdmin.
      */
     public function destroyBulk(Request $request)
@@ -182,30 +208,36 @@ class DashboardController extends Controller
 
         $jumlah = Mahasiswa::whereIn('id', $validated['mahasiswa_ids'])->delete();
 
-        return back()->with('status', "{$jumlah} data berhasil dihapus.");
+        ActivityLog::catat('hapus_mahasiswa_massal', "Memindahkan {$jumlah} data terpilih ke Sampah.");
+
+        return back()->with('status', "{$jumlah} data dipindahkan ke Sampah (bisa dipulihkan SuperAdmin).");
     }
 
     /**
-     * Hapus SEMUA data mahasiswa dalam 1 Prodi sekaligus (lintas halaman,
-     * bukan cuma 20 baris yang sedang tampil). Khusus SuperAdmin.
+     * Hapus (soft delete) SEMUA data mahasiswa dalam 1 Prodi sekaligus
+     * (lintas halaman, bukan cuma 20 baris yang sedang tampil). Khusus SuperAdmin.
      */
     public function destroyAllProdi(Prodi $prodi)
     {
         $jumlah = Mahasiswa::where('prodi_id', $prodi->id)->delete();
 
+        ActivityLog::catat('hapus_mahasiswa_semua', "Memindahkan SEMUA {$jumlah} data di prodi \"{$prodi->nama}\" ke Sampah.");
+
         return redirect()->route('dashboard.prodi', $prodi)
-            ->with('status', "{$jumlah} data di prodi ini berhasil dihapus semua.");
+            ->with('status', "{$jumlah} data di prodi ini dipindahkan ke Sampah.");
     }
 
     /**
-     * Hapus SEMUA data mahasiswa yang belum dikategorikan Fakultas/Prodi
-     * (data lama) sekaligus. Khusus SuperAdmin.
+     * Hapus (soft delete) SEMUA data mahasiswa yang belum dikategorikan
+     * Fakultas/Prodi (data lama) sekaligus. Khusus SuperAdmin.
      */
     public function destroyAllLegacy()
     {
         $jumlah = Mahasiswa::whereNull('prodi_id')->delete();
 
+        ActivityLog::catat('hapus_mahasiswa_semua', "Memindahkan SEMUA {$jumlah} data belum dikategorikan ke Sampah.");
+
         return redirect()->route('dashboard.legacy')
-            ->with('status', "{$jumlah} data lama berhasil dihapus semua.");
+            ->with('status', "{$jumlah} data lama dipindahkan ke Sampah.");
     }
 }

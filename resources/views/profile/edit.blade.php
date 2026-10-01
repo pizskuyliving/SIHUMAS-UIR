@@ -1,17 +1,29 @@
 <x-app-layout title="Edit Profil">
-    <div class="max-w-lg neu-card p-6">
-        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-5">
+    <div class="max-w-lg neu-card p-6" x-data="profilePhotoCropper()">
+        <form method="POST" action="{{ route('profile.update') }}" class="space-y-5">
             @csrf
             @method('PUT')
 
             <div class="flex items-center gap-4">
-                <x-avatar :user="$user" class="w-16 h-16 text-xl" />
+                <template x-if="!croppedPreview">
+                    <x-avatar :user="$user" class="w-16 h-16 text-xl" />
+                </template>
+                <template x-if="croppedPreview">
+                    <img :src="croppedPreview" alt="Preview foto baru"
+                         class="w-16 h-16 rounded-full object-cover neu-avatar-frame">
+                </template>
                 <div>
                     <label class="block text-sm font-medium mb-1">Foto Profil</label>
-                    <input type="file" name="photo" accept="image/*" class="text-sm">
+                    <input type="file" accept="image/*" @change="pilihFile($event)" class="text-sm">
                     <p class="text-xs text-gray-400 mt-1">JPG/PNG, maksimal 2MB. Kosongkan kalau tidak ingin ganti.</p>
+                    <p class="text-xs text-emerald-700 mt-1 font-medium" x-show="croppedPreview" x-cloak>
+                        ✓ Foto baru siap disimpan (sudah dipotong rapi)
+                    </p>
                 </div>
             </div>
+
+            {{-- Hasil crop dikirim sebagai gambar base64 di sini, BUKAN file mentah --}}
+            <input type="hidden" name="photo_base64" x-ref="photoBase64">
 
             <div>
                 <label class="block text-sm font-medium mb-1">Nama</label>
@@ -55,5 +67,26 @@
                 Simpan Perubahan
             </button>
         </form>
+
+        {{-- ==================== Modal Crop Foto ==================== --}}
+        <div x-show="cropperOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-primary-dark/60 p-4">
+            <div class="neu-card bg-white p-5 w-full max-w-md">
+                <p class="font-semibold text-primary-dark mb-1">Atur Posisi & Ukuran Foto</p>
+                <p class="text-xs text-gray-400 mb-3">Geser dan perbesar/perkecil kotaknya untuk memilih bagian foto yang dipakai.</p>
+
+                <div class="bg-gray-100 rounded-lg overflow-hidden" style="max-height: 320px;">
+                    <img x-ref="cropImage" class="block max-w-full" alt="Foto yang sedang diatur">
+                </div>
+
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" @click="batalkanCrop()" class="neu-btn px-4 py-2 text-sm">
+                        Batal
+                    </button>
+                    <button type="button" @click="terapkanCrop()" class="neu-btn-primary px-4 py-2 text-sm">
+                        Gunakan Foto Ini
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </x-app-layout>

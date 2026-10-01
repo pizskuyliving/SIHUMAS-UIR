@@ -17,13 +17,21 @@
                 <input type="password" name="password" required
                        class="w-full neu-input text-sm">
             </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">Role</label>
-                <select name="role" class="w-full neu-input text-sm">
-                    <option value="pic">PIC (Telemarketing)</option>
-                    <option value="superadmin">SuperAdmin</option>
-                </select>
-            </div>
+            @if ($isSuperAdmin)
+                <div>
+                    <label class="block text-sm font-medium mb-1">Role</label>
+                    <select name="role" class="w-full neu-input text-sm">
+                        <option value="pic">PIC (Telemarketing)</option>
+                        <option value="koordinator">Koordinator</option>
+                        <option value="superadmin">SuperAdmin</option>
+                    </select>
+                </div>
+            @else
+                <p class="text-xs text-gray-400">
+                    Akun yang dibuat lewat form ini otomatis berperan sebagai <strong>PIC (Telemarketing)</strong>.
+                    Hubungi SuperAdmin kalau perlu membuat akun Koordinator/SuperAdmin.
+                </p>
+            @endif
             <button class="neu-btn-primary text-sm px-5 py-2">
                 Simpan
             </button>

@@ -9,7 +9,7 @@
         <div></div>
         <button type="button" onclick="window.print()"
                 class="inline-flex items-center gap-2 neu-btn text-sm px-4 py-2">
-            🖨️ Cetak / Simpan PDF
+            <x-icon name="printer" class="w-4 h-4" /> Cetak / Simpan PDF
         </button>
     </div>
 

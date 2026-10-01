@@ -3,8 +3,20 @@
 
 [x-cloak] { display: none !important; }
 
+body {
+    font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
 
+/*
+ * SIHUMAS UIR — token desain diterjemahkan dari "Flip7 Design System"
+ * (retro-playful, teal-coral-gold) ke Tailwind CSS v4.
+ * Dengan token di sini, semua utility Tailwind otomatis tersedia:
+ * bg-primary, text-primary-dark, border-coral, shadow-card, dst.
+ */
 @theme {
+    /* Font default seluruh aplikasi */
+    --font-sans: 'Montserrat', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
     /* Teal — warna utama UI (sidebar, header, badge, progress) */
     --color-primary: #2BA8A2;
     --color-primary-light: #3CC4BD;
@@ -27,23 +39,6 @@
     --color-surface: #EFF8F7;
     --color-success: #27AE60;
     --color-error: #E74C3C;
-
-    /* Glow shadow ala Flip7 — dipakai lewat shadow-card, shadow-accent-glow, dst */
-    --shadow-card: 0 4px 20px rgba(43, 168, 162, 0.10);
-    --shadow-teal-glow: 0 4px 20px rgba(43, 168, 162, 0.30);
-    --shadow-accent-glow: 0 4px 20px rgba(255, 210, 63, 0.40);
-    --shadow-coral-glow: 0 4px 20px rgba(239, 108, 74, 0.35);
-    --shadow-sky-glow: 0 4px 16px rgba(93, 173, 226, 0.30);
-}
-
-/* Tombol pill ala Flip7: bulat penuh, bounce halus saat ditekan */
-.btn-pill {
-    border-radius: 999px;
-    font-weight: 800;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-.btn-pill:active {
-    transform: scale(0.96);
 }
 
 /*

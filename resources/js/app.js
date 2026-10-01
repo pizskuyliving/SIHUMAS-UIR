@@ -1,9 +1,12 @@
 import Alpine from 'alpinejs';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import Cropper from 'cropperjs';
+import 'cropperjs/dist/cropper.css';
 
 window.Alpine = Alpine;
 window.Chart = Chart;
+window.Cropper = Cropper;
 
 // =====================================================================
 //  HELPER GRAFIK (Chart.js) — dipakai di halaman Statistik & Kinerja
@@ -169,6 +172,79 @@ window.fakultasPicker = function (initialFakultasId = '') {
         get prodiOptions() {
             const f = this.fakultasList.find((item) => item.id == this.selectedFakultasId);
             return f ? f.prodis : [];
+        },
+    };
+};
+
+/**
+ * Preview + crop foto profil sebelum disimpan. Alur:
+ * 1. User pilih file -> dibaca lewat FileReader (tanpa upload ke server dulu)
+ * 2. Modal crop terbuka, user atur area 1:1 (persegi) pakai Cropper.js
+ * 3. Klik "Gunakan Foto Ini" -> hasil crop diubah jadi gambar JPEG base64,
+ *    disimpan di input hidden 'photo_base64' + ditampilkan sebagai preview
+ * 4. Baru saat form "Simpan Perubahan" disubmit, data base64 itu yang
+ *    dikirim ke server (lihat ProfileController@update) - BUKAN file asli
+ *    yang belum di-crop.
+ */
+window.profilePhotoCropper = function () {
+    return {
+        cropperOpen: false,
+        croppedPreview: null,
+        cropperInstance: null,
+
+        pilihFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('File harus berupa gambar (JPG/PNG).');
+                event.target.value = '';
+                return;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran file maksimal 2MB.');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.cropperOpen = true;
+                this.$nextTick(() => {
+                    this.$refs.cropImage.src = e.target.result;
+                    if (this.cropperInstance) this.cropperInstance.destroy();
+                    this.cropperInstance = new window.Cropper(this.$refs.cropImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                        background: false,
+                    });
+                });
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ''; // supaya bisa pilih file yang sama lagi kalau mau ulang crop
+        },
+
+        batalkanCrop() {
+            this.cropperOpen = false;
+            if (this.cropperInstance) {
+                this.cropperInstance.destroy();
+                this.cropperInstance = null;
+            }
+        },
+
+        terapkanCrop() {
+            if (!this.cropperInstance) return;
+
+            const canvas = this.cropperInstance.getCroppedCanvas({ width: 400, height: 400 });
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+            this.croppedPreview = dataUrl;
+            this.$refs.photoBase64.value = dataUrl;
+
+            this.cropperInstance.destroy();
+            this.cropperInstance = null;
+            this.cropperOpen = false;
         },
     };
 };

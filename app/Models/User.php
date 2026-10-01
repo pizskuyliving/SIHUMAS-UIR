@@ -39,6 +39,30 @@ class User extends Authenticatable
         return $this->role === 'superadmin';
     }
 
+    public function isKoordinator(): bool
+    {
+        return $this->role === 'koordinator';
+    }
+
+    /**
+     * True untuk SuperAdmin MAUPUN Koordinator - dipakai di tempat-tempat
+     * yang boleh diakses keduanya (beda dengan isSuperAdmin() yang hanya
+     * true untuk SuperAdmin murni).
+     */
+    public function isAtLeastKoordinator(): bool
+    {
+        return in_array($this->role, ['superadmin', 'koordinator'], true);
+    }
+
+    public function roleLabel(): string
+    {
+        return match ($this->role) {
+            'superadmin' => 'SuperAdmin',
+            'koordinator' => 'Koordinator',
+            default => 'PIC Telemarketing',
+        };
+    }
+
     /**
      * URL foto profil, atau null kalau belum upload foto (view akan
      * menampilkan avatar berupa huruf awal nama sebagai fallback).
