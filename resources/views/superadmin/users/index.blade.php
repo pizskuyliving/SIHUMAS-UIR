@@ -1,12 +1,12 @@
 <x-app-layout title="Kelola Pengguna">
     <div class="mb-4 flex justify-end">
         <a href="{{ route('superadmin.users.create') }}"
-           class="bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg hover:bg-emerald-800">
+           class="neu-btn-primary text-sm px-4 py-2">
             + Tambah Pengguna
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
+    <div class="neu-card overflow-x-auto">
         <table class="min-w-full text-sm">
             <thead class="bg-gray-100 text-gray-600 text-xs uppercase">
                 <tr>

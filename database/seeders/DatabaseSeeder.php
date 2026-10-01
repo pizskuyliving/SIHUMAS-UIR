@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Fakultas;
+use App\Models\Pertimbangan;
 use App\Models\RencanaWisuda;
 use App\Models\StatusFollowUp;
 use App\Models\User;
@@ -32,6 +33,11 @@ class DatabaseSeeder extends Seeder
         // Pilihan default Rencana Wisuda
         foreach (['Ya', 'Belum Pasti', 'Tidak'] as $i => $nama) {
             RencanaWisuda::firstOrCreate(['nama' => $nama], ['urutan' => $i]);
+        }
+
+        // Pilihan default Pertimbangan
+        foreach (['Kendala Administrasi', 'Kendala Biaya', 'Kendala Akademik', 'Sudah Siap'] as $i => $nama) {
+            Pertimbangan::firstOrCreate(['nama' => $nama], ['urutan' => $i]);
         }
 
         // Contoh Fakultas + Prodi (silakan disesuaikan/ditambah lewat menu

@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MahasiswaExport;
 use App\Models\Fakultas;
 use App\Models\FollowUp;
 use App\Models\Mahasiswa;
+use App\Models\Pertimbangan;
 use App\Models\Prodi;
 use App\Models\StatusFollowUp;
 use App\Models\RencanaWisuda;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
+    private const EAGER = ['followUp.pic', 'followUp.statusFollowUp', 'followUp.rencanaWisuda', 'followUp.pertimbangan', 'prodi.fakultas'];
+
     /**
      * Halaman awal Data & Follow Up: pilih Fakultas dulu, lalu Prodi.
      */
@@ -37,7 +42,7 @@ class DashboardController extends Controller
         $prodi->load('fakultas');
 
         $query = Mahasiswa::where('prodi_id', $prodi->id)
-            ->with(['followUp.pic', 'followUp.statusFollowUp', 'followUp.rencanaWisuda'])
+            ->with(self::EAGER)
             ->orderBy('no');
 
         return $this->renderTabel($request, $query, [
@@ -45,6 +50,7 @@ class DashboardController extends Controller
             'backUrl' => route('dashboard'),
             'deleteAllUrl' => route('mahasiswa.destroy-all-prodi', $prodi),
             'deleteAllTotal' => Mahasiswa::where('prodi_id', $prodi->id)->count(),
+            'exportUrl' => route('dashboard.prodi.export', $prodi),
         ]);
     }
 
@@ -55,7 +61,7 @@ class DashboardController extends Controller
     public function legacy(Request $request)
     {
         $query = Mahasiswa::whereNull('prodi_id')
-            ->with(['followUp.pic', 'followUp.statusFollowUp', 'followUp.rencanaWisuda'])
+            ->with(self::EAGER)
             ->orderBy('no');
 
         return $this->renderTabel($request, $query, [
@@ -63,7 +69,39 @@ class DashboardController extends Controller
             'backUrl' => route('dashboard'),
             'deleteAllUrl' => route('mahasiswa.destroy-all-legacy'),
             'deleteAllTotal' => Mahasiswa::whereNull('prodi_id')->count(),
+            'exportUrl' => route('dashboard.legacy.export'),
         ]);
+    }
+
+    /**
+     * Unduh Excel berisi SELURUH data di 1 Prodi (bukan cuma halaman yang
+     * sedang tampil), dengan format kolom sesuai sistem.
+     */
+    public function exportProdi(Prodi $prodi)
+    {
+        $prodi->load('fakultas');
+
+        $mahasiswas = Mahasiswa::where('prodi_id', $prodi->id)
+            ->with(self::EAGER)
+            ->orderBy('no')
+            ->get();
+
+        $namaFile = 'sihumas-' . str($prodi->fakultas->nama . '-' . $prodi->nama)->slug() . '.xlsx';
+
+        return Excel::download(new MahasiswaExport($mahasiswas), $namaFile);
+    }
+
+    /**
+     * Unduh Excel untuk data lama yang belum dikategorikan Fakultas/Prodi.
+     */
+    public function exportLegacy()
+    {
+        $mahasiswas = Mahasiswa::whereNull('prodi_id')
+            ->with(self::EAGER)
+            ->orderBy('no')
+            ->get();
+
+        return Excel::download(new MahasiswaExport($mahasiswas), 'sihumas-data-belum-dikategorikan.xlsx');
     }
 
     private function renderTabel(Request $request, $query, array $meta)
@@ -81,20 +119,23 @@ class DashboardController extends Controller
             'mahasiswas' => $mahasiswas,
             'statusOptions' => StatusFollowUp::orderBy('urutan')->get(),
             'rencanaOptions' => RencanaWisuda::orderBy('urutan')->get(),
+            'pertimbanganOptions' => Pertimbangan::orderBy('urutan')->get(),
         ]));
     }
 
     /**
      * Simpan / update follow up untuk 1 baris mahasiswa.
      * PIC yang login otomatis tercatat sebagai PIC Telemarketing baris ini.
+     * (No. HP 1 & 2 TIDAK diisi lewat form ini - keduanya diisi dari Excel
+     * saat import, sama seperti data mahasiswa lain.)
      */
     public function updateFollowUp(Request $request, Mahasiswa $mahasiswa)
     {
         $validated = $request->validate([
             'status_follow_up_id' => 'nullable|exists:status_follow_ups,id',
             'rencana_wisuda_id' => 'nullable|exists:rencana_wisudas,id',
-            'keterangan' => 'nullable|string',
-            'follow_up_berikutnya' => 'nullable|string',
+            'pertimbangan_id' => 'nullable|exists:pertimbangans,id',
+            'follow_up_berikutnya' => 'nullable|string', // ditampilkan sebagai "Catatan"
             'fakultas' => 'nullable|string|max:255',
         ]);
 
@@ -108,7 +149,7 @@ class DashboardController extends Controller
                 'pic_id' => $request->user()->id,
                 'status_follow_up_id' => $validated['status_follow_up_id'] ?? null,
                 'rencana_wisuda_id' => $validated['rencana_wisuda_id'] ?? null,
-                'keterangan' => $validated['keterangan'] ?? null,
+                'pertimbangan_id' => $validated['pertimbangan_id'] ?? null,
                 'follow_up_berikutnya' => $validated['follow_up_berikutnya'] ?? null,
             ]
         );

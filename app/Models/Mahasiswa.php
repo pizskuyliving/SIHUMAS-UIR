@@ -16,6 +16,7 @@ class Mahasiswa extends Model
         'nama_mahasiswa',
         'npm',
         'no_hp',
+        'no_hp_2',
     ];
 
     public function prodi()

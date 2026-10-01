@@ -5,11 +5,12 @@
         window.__fakultasList = @json($fakultasJson);
     </script>
 
-    <div x-data="fakultasPicker()" class="max-w-xl bg-white rounded-xl shadow-sm border p-6">
+    <div x-data="fakultasPicker()" class="max-w-xl neu-card p-6">
         <p class="text-sm text-gray-600 mb-4">
             Format file Excel yang diterima: kolom <strong>No, Nama Mahasiswa, NPM, Nomor kontak</strong>
-            pada baris pertama sebagai header. Data akan otomatis masuk ke Fakultas & Prodi yang dipilih
-            di bawah; jika NPM sudah ada, data lama akan diperbarui (tidak duplikat).
+            (dan opsional <strong>Nomor kontak 2</strong>) pada baris pertama sebagai header. Data akan
+            otomatis masuk ke Fakultas & Prodi yang dipilih di bawah; jika NPM sudah ada, data lama akan
+            diperbarui (tidak duplikat).
         </p>
 
         @if ($fakultasList->isEmpty())
@@ -23,8 +24,8 @@
                 <div>
                     <label class="block text-sm font-medium mb-1">Fakultas</label>
                     <select x-model="selectedFakultasId" required
-                            class="w-full rounded-lg border-gray-300 text-sm">
-                        <option value="">- Pilih Fakultas -</option>
+                            class="w-full neu-input text-sm">
+                        <option value="">- pilih fakultas -</option>
                         <template x-for="f in fakultasList" :key="f.id">
                             <option :value="f.id" x-text="f.nama"></option>
                         </template>
@@ -34,7 +35,7 @@
                 <div x-show="selectedFakultasId">
                     <label class="block text-sm font-medium mb-1">Program Studi</label>
                     <select name="prodi_id" x-bind:required="!!selectedFakultasId"
-                            class="w-full rounded-lg border-gray-300 text-sm">
+                            class="w-full neu-input text-sm">
                         <option value="">- pilih prodi -</option>
                         <template x-for="p in prodiOptions" :key="p.id">
                             <option :value="p.id" x-text="p.nama"></option>
@@ -48,10 +49,10 @@
                 <div>
                     <label class="block text-sm font-medium mb-1">File Excel (.xlsx / .xls / .csv)</label>
                     <input type="file" name="file_excel" accept=".xlsx,.xls,.csv" required
-                           class="w-full text-sm border border-gray-300 rounded-lg p-2">
+                           class="w-full text-sm neu-input p-2">
                 </div>
 
-                <button class="bg-emerald-700 text-white text-sm px-5 py-2 rounded-lg hover:bg-emerald-800">
+                <button class="neu-btn-primary text-sm px-5 py-2">
                     Upload & Proses
                 </button>
             </form>

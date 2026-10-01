@@ -11,8 +11,9 @@ class FollowUp extends Model
         'pic_id',
         'status_follow_up_id',
         'rencana_wisuda_id',
-        'keterangan',
-        'follow_up_berikutnya',
+        'pertimbangan_id',
+        'keterangan', // kolom lama (teks bebas), dipertahankan untuk fallback tampilan data lama
+        'follow_up_berikutnya', // sekarang ditampilkan sebagai "Catatan"
     ];
 
     public function mahasiswa()
@@ -33,5 +34,10 @@ class FollowUp extends Model
     public function rencanaWisuda()
     {
         return $this->belongsTo(RencanaWisuda::class);
+    }
+
+    public function pertimbangan()
+    {
+        return $this->belongsTo(Pertimbangan::class);
     }
 }

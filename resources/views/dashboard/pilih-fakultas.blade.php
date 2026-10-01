@@ -5,7 +5,7 @@
 
     <div class="space-y-4 max-w-3xl">
         @forelse ($fakultasList as $fakultas)
-            <div class="bg-white rounded-xl shadow-sm border p-5" x-data="{ open: false }">
+            <div class="neu-card p-5" x-data="{ open: false }">
                 <button type="button" @click="open = !open"
                         class="w-full flex items-center justify-between text-left">
                     <div>
@@ -18,7 +18,7 @@
                 <div x-show="open" x-cloak class="mt-4 pt-4 border-t grid sm:grid-cols-2 gap-3">
                     @forelse ($fakultas->prodis as $prodi)
                         <a href="{{ route('dashboard.prodi', $prodi) }}"
-                           class="flex items-center justify-between px-4 py-3 rounded-lg border hover:border-emerald-600 hover:bg-emerald-50 text-sm">
+                           class="neu-btn flex items-center justify-between px-4 py-3 text-sm">
                             <span>{{ $prodi->nama }}</span>
                             <span class="text-xs text-gray-400">{{ $prodi->mahasiswas_count }} mahasiswa</span>
                         </a>
@@ -28,7 +28,7 @@
                 </div>
             </div>
         @empty
-            <div class="bg-white rounded-xl shadow-sm border p-6 text-sm text-gray-400">
+            <div class="neu-card p-6 text-sm text-gray-400">
                 Belum ada Fakultas. Tambahkan dulu lewat menu <strong>Master Fakultas & Prodi</strong>.
             </div>
         @endforelse

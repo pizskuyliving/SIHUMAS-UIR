@@ -7,6 +7,7 @@ use App\Http\Controllers\MahasiswaImportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\SuperAdmin\FakultasController;
+use App\Http\Controllers\SuperAdmin\PertimbanganController;
 use App\Http\Controllers\SuperAdmin\RencanaWisudaController;
 use App\Http\Controllers\SuperAdmin\StatusFollowUpController;
 use App\Http\Controllers\SuperAdmin\UserController;
@@ -30,7 +31,9 @@ Route::middleware('auth')->group(function () {
     // Dashboard: pilih Fakultas -> Prodi -> tabel Data & Follow Up (PIC & SuperAdmin)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/prodi/{prodi}', [DashboardController::class, 'prodi'])->name('dashboard.prodi');
+    Route::get('/dashboard/prodi/{prodi}/export', [DashboardController::class, 'exportProdi'])->name('dashboard.prodi.export');
     Route::get('/dashboard/legacy', [DashboardController::class, 'legacy'])->name('dashboard.legacy');
+    Route::get('/dashboard/legacy/export', [DashboardController::class, 'exportLegacy'])->name('dashboard.legacy.export');
     Route::put('/mahasiswa/{mahasiswa}/follow-up', [DashboardController::class, 'updateFollowUp'])
         ->name('follow-up.update');
     Route::delete('/mahasiswa/{mahasiswa}', [DashboardController::class, 'destroy'])->name('mahasiswa.destroy');
@@ -72,6 +75,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/rencana-wisuda', [RencanaWisudaController::class, 'store'])->name('rencana-wisuda.store');
         Route::patch('/rencana-wisuda/{rencanaWisuda}', [RencanaWisudaController::class, 'update'])->name('rencana-wisuda.update');
         Route::delete('/rencana-wisuda/{rencanaWisuda}', [RencanaWisudaController::class, 'destroy'])->name('rencana-wisuda.destroy');
+
+        Route::get('/pertimbangan', [PertimbanganController::class, 'index'])->name('pertimbangan.index');
+        Route::post('/pertimbangan', [PertimbanganController::class, 'store'])->name('pertimbangan.store');
+        Route::patch('/pertimbangan/{pertimbangan}', [PertimbanganController::class, 'update'])->name('pertimbangan.update');
+        Route::delete('/pertimbangan/{pertimbangan}', [PertimbanganController::class, 'destroy'])->name('pertimbangan.destroy');
 
         Route::get('/fakultas', [FakultasController::class, 'index'])->name('fakultas.index');
         Route::post('/fakultas', [FakultasController::class, 'store'])->name('fakultas.store');

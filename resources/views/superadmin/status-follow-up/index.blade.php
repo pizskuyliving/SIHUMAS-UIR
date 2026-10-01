@@ -1,21 +1,21 @@
 <x-app-layout title="Master Status Follow Up">
-    <div class="max-w-xl bg-white rounded-xl shadow-sm border p-6 mb-6">
+    <div class="max-w-xl neu-card p-6 mb-6">
         <h2 class="font-semibold mb-3 text-sm">Tambah Pilihan Baru</h2>
         <form method="POST" action="{{ route('superadmin.status-follow-up.store') }}" class="flex gap-2">
             @csrf
             <input type="text" name="nama" placeholder="Contoh: Sudah Wisuda" required
-                   class="flex-1 rounded-lg border-gray-300 text-sm">
-            <button class="bg-emerald-700 text-white text-sm px-4 rounded-lg hover:bg-emerald-800">Tambah</button>
+                   class="flex-1 neu-input text-sm">
+            <button class="neu-btn-primary text-sm px-4">Tambah</button>
         </form>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border divide-y max-w-xl">
+    <div class="neu-card divide-y max-w-xl">
         @foreach ($items as $item)
             <div class="flex items-center justify-between px-4 py-3">
                 <form method="POST" action="{{ route('superadmin.status-follow-up.update', $item) }}" class="flex-1 flex items-center gap-2">
                     @csrf @method('PATCH')
                     <input type="text" name="nama" value="{{ $item->nama }}"
-                           class="flex-1 rounded-lg border-gray-300 text-sm">
+                           class="flex-1 neu-input text-sm">
                     <button class="text-xs underline text-emerald-700">Simpan</button>
                 </form>
                 <form method="POST" action="{{ route('superadmin.status-follow-up.destroy', $item) }}"
