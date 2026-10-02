@@ -3,6 +3,34 @@
         <a href="{{ route('mahasiswa.import') }}" class="text-sm text-emerald-700 underline">&larr; Batal, upload file lain</a>
     </div>
 
+    @if ($kolomTerdeteksi)
+        @php
+            $labelField = [
+                'no' => 'No. Urut',
+                'npm' => 'NPM',
+                'nama_mahasiswa' => 'Nama Mahasiswa',
+                'no_hp' => 'No. HP',
+                'no_hp_2' => 'No. HP 2',
+            ];
+        @endphp
+        <div class="neu-card p-4 sm:p-5 mb-4 bg-sky-50/40">
+            <p class="text-sm font-semibold text-primary-dark mb-2">🔍 Kolom yang terdeteksi otomatis dari file kamu:</p>
+            <div class="flex flex-wrap gap-2">
+                @foreach ($labelField as $field => $label)
+                    @if (isset($kolomTerdeteksi[$field]))
+                        <span class="text-xs bg-white rounded-full px-3 py-1.5 border border-sky-200">
+                            <strong>{{ $label }}</strong> &larr; kolom "{{ $kolomTerdeteksi[$field]['label'] }}"
+                        </span>
+                    @endif
+                @endforeach
+            </div>
+            <p class="text-xs text-gray-400 mt-2">
+                Kolom lain di file kamu (kalau ada) otomatis diabaikan. Kalau ada yang salah terdeteksi,
+                batalkan dan rapikan nama header kolomnya di file Excel, lalu upload ulang.
+            </p>
+        </div>
+    @endif
+
     <div class="neu-card p-4 sm:p-6 mb-6">
         <p class="text-sm text-gray-600">
             Tujuan: <strong>{{ $prodi->fakultas->nama }} - {{ $prodi->nama }}</strong><br>

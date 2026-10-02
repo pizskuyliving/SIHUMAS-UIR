@@ -3,49 +3,64 @@
 namespace App\Imports;
 
 use App\Models\Mahasiswa;
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 /**
  * Hanya MEMBACA file Excel dan menyusun ringkasan (tanpa menyimpan apa pun
  * ke database), dipakai untuk halaman Preview sebelum import sungguhan.
+ * Memakai deteksi kolom otomatis (lihat KolomMapper) - jadi file Excel
+ * "mentah" dari sumber manapun bisa langsung dibaca, tidak harus ikut
+ * format baku (header baris 2, urutan kolom tertentu).
  */
-class MahasiswaPreviewImport implements ToCollection, WithHeadingRow
+class MahasiswaPreviewImport implements ToArray
 {
+    use KolomMapper;
+
     public array $rows = [];
     public int $totalBaru = 0;
     public int $totalDiperbarui = 0;
     public int $totalDilewati = 0;
 
-    public function headingRow(): int
-    {
-        return 2;
-    }
+    /** Info kolom yang berhasil dideteksi, utk ditampilkan ke user di preview */
+    public ?array $kolomTerdeteksi = null;
 
-    public function collection(Collection $collection): void
+    /** Kalau NPM/Nama Mahasiswa sama sekali tidak ketemu di file ini */
+    public ?string $pesanGagalDeteksi = null;
+
+    public function array(array $array): void
     {
-        // Lacak NPM yang sudah muncul di file ini (bukan di database), supaya
-        // baris NPM dobel DALAM 1 file yang sama bisa terdeteksi dan
-        // diperingatkan - karena kalau dibiarkan, baris yang diproses
-        // belakangan akan menimpa baris sebelumnya tanpa pemberitahuan.
+        $deteksi = $this->deteksiHeaderDanPemetaan($array);
+
+        if (! $deteksi) {
+            $this->pesanGagalDeteksi = 'Tidak ditemukan kolom NPM dan Nama Mahasiswa di 10 baris pertama file ini. '
+                . 'Pastikan file punya baris header dengan nama kolom yang jelas (misal "NPM" dan "Nama Mahasiswa").';
+
+            return;
+        }
+
+        $pemetaan = $deteksi['pemetaan'];
+        $this->kolomTerdeteksi = $pemetaan;
+
+        $dataRows = array_slice($array, $deteksi['baris_index'] + 1);
         $npmTerlihat = [];
-
-        // Lacak nomor HP yang sudah muncul di file ini, dipakai NPM mana.
-        // Beda dengan NPM dobel: ini CUMA peringatan info (nomor HP memang
-        // boleh sama, misal kakak-adik pakai HP orang tua), bukan error -
-        // jadi tidak mengubah status baru/diperbarui/dilewati.
         $nomorTerlihat = [];
+        $urutan = 1;
 
-        foreach ($collection as $row) {
-            $npm = trim((string) ($row['npm'] ?? ''));
-            $nama = trim((string) ($row['nama_mahasiswa'] ?? ''));
-            $noHp = $this->sanitizePhone($row['nomor_kontak'] ?? null);
-            $noHp2 = $this->sanitizePhone($row['nomor_kontak_2'] ?? null);
-            $baris = $row['no'] ?? '?';
+        foreach ($dataRows as $row) {
+            $npm = trim((string) ($row[$pemetaan['npm']['index']] ?? ''));
+            $nama = trim((string) ($row[$pemetaan['nama_mahasiswa']['index']] ?? ''));
+            $noHp = isset($pemetaan['no_hp']) ? $this->sanitizePhone($row[$pemetaan['no_hp']['index']] ?? null) : null;
+            $noHp2 = isset($pemetaan['no_hp_2']) ? $this->sanitizePhone($row[$pemetaan['no_hp_2']['index']] ?? null) : null;
+            $noAsli = isset($pemetaan['no']) ? ($row[$pemetaan['no']['index']] ?? null) : null;
+
+            if ($npm === '' && $nama === '') {
+                continue; // baris benar-benar kosong, lewati tanpa dihitung sama sekali
+            }
+
+            $baris = $noAsli ?? $urutan;
 
             $item = [
-                'no' => $row['no'] ?? null,
+                'no' => $baris,
                 'nama' => $nama ?: null,
                 'npm' => $npm ?: null,
                 'no_hp' => $noHp,
@@ -63,7 +78,6 @@ class MahasiswaPreviewImport implements ToCollection, WithHeadingRow
                 $item['status'] = 'dilewati';
                 $item['alasan'] = 'NPM harus berupa angka';
             } elseif (isset($npmTerlihat[$npm])) {
-                // NPM ini sudah pernah muncul di baris sebelumnya DI FILE INI JUGA.
                 $this->totalDiperbarui++;
                 $item['status'] = 'diperbarui';
                 $item['alasan'] = "NPM dobel dengan baris {$npmTerlihat[$npm]} di file ini - data baris itu akan TERTIMPA oleh baris ini";
@@ -75,7 +89,6 @@ class MahasiswaPreviewImport implements ToCollection, WithHeadingRow
                 $item['status'] = 'baru';
             }
 
-            // Peringatan nomor HP sama dipakai NPM lain (bukan error, cuma info)
             $npmValid = $npm !== '' && preg_match('/^\d+$/', $npm);
             if ($npmValid) {
                 $peringatanNomor = [];
@@ -99,17 +112,7 @@ class MahasiswaPreviewImport implements ToCollection, WithHeadingRow
             }
 
             $this->rows[] = $item;
+            $urutan++;
         }
-    }
-
-    private function sanitizePhone(mixed $raw): ?string
-    {
-        if ($raw === null || trim((string) $raw) === '') {
-            return null;
-        }
-
-        $bersih = preg_replace('/[^\d+]/', '', (string) $raw);
-
-        return $bersih === '' ? null : $bersih;
     }
 }

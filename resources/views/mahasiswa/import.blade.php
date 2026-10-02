@@ -7,10 +7,12 @@
 
     <div x-data="fakultasPicker()" class="max-w-xl neu-card p-6">
         <p class="text-sm text-gray-600 mb-4">
-            Format file Excel yang diterima: kolom <strong>No, Nama Mahasiswa, NPM, Nomor kontak</strong>
-            (dan opsional <strong>Nomor kontak 2</strong>) pada baris pertama sebagai header. Data akan
-            otomatis masuk ke Fakultas & Prodi yang dipilih di bawah; jika NPM sudah ada, data lama akan
-            diperbarui (tidak duplikat). Anda akan diperlihatkan PREVIEW dulu sebelum data benar-benar tersimpan.
+            File Excel <strong>apa pun formatnya boleh langsung diupload</strong> — sistem otomatis mendeteksi
+            kolom mana yang berisi <strong>NPM</strong>, <strong>Nama Mahasiswa</strong>, dan <strong>No. HP</strong>
+            berdasarkan nama header-nya (tidak harus baris pertama, tidak harus urutan tertentu, kolom lain yang
+            tidak dikenali otomatis diabaikan). Data akan masuk ke Fakultas & Prodi yang dipilih di bawah; jika
+            NPM sudah ada, data lama akan diperbarui (tidak duplikat). Anda akan diperlihatkan PREVIEW dulu —
+            termasuk kolom apa saja yang terdeteksi — sebelum data benar-benar tersimpan.
         </p>
 
         @if ($fakultasList->isEmpty())

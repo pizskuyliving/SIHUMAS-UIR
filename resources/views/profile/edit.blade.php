@@ -70,19 +70,19 @@
 
         {{-- ==================== Modal Crop Foto ==================== --}}
         <div x-show="cropperOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-primary-dark/60 p-4">
-            <div class="neu-card bg-white p-5 w-full max-w-md">
+            <div class="modal-surface p-6 w-full max-w-md">
                 <p class="font-semibold text-primary-dark mb-1">Atur Posisi & Ukuran Foto</p>
-                <p class="text-xs text-gray-400 mb-3">Geser dan perbesar/perkecil kotaknya untuk memilih bagian foto yang dipakai.</p>
+                <p class="text-xs text-primary mb-4">Geser dan perbesar/perkecil kotaknya untuk memilih bagian foto yang dipakai.</p>
 
-                <div class="bg-gray-100 rounded-lg overflow-hidden" style="max-height: 320px;">
-                    <img x-ref="cropImage" class="block max-w-full" alt="Foto yang sedang diatur">
+                <div class="bg-white rounded-2xl overflow-hidden p-1 shadow-inner" style="max-height: 320px;">
+                    <img x-ref="cropImage" class="block max-w-full rounded-xl" alt="Foto yang sedang diatur">
                 </div>
 
-                <div class="flex justify-end gap-2 mt-4">
-                    <button type="button" @click="batalkanCrop()" class="neu-btn px-4 py-2 text-sm">
+                <div class="flex justify-end gap-2 mt-5">
+                    <button type="button" @click="batalkanCrop()" class="neu-btn px-5 py-2.5 text-sm">
                         Batal
                     </button>
-                    <button type="button" @click="terapkanCrop()" class="neu-btn-primary px-4 py-2 text-sm">
+                    <button type="button" @click="terapkanCrop()" class="neu-btn-primary px-5 py-2.5 text-sm">
                         Gunakan Foto Ini
                     </button>
                 </div>

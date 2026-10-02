@@ -61,6 +61,12 @@ class MahasiswaImportController extends Controller
         $preview = new MahasiswaPreviewImport();
         Excel::import($preview, self::TEMP_DIR . '/' . $namaTemp, 'local');
 
+        if ($preview->pesanGagalDeteksi) {
+            Storage::disk('local')->delete(self::TEMP_DIR . '/' . $namaTemp);
+
+            return redirect()->route('mahasiswa.import')->withErrors($preview->pesanGagalDeteksi);
+        }
+
         return view('mahasiswa.import-preview', [
             'prodi' => $prodi,
             'namaFileAsli' => $namaFileAsli,
@@ -69,6 +75,7 @@ class MahasiswaImportController extends Controller
             'totalBaru' => $preview->totalBaru,
             'totalDiperbarui' => $preview->totalDiperbarui,
             'totalDilewati' => $preview->totalDilewati,
+            'kolomTerdeteksi' => $preview->kolomTerdeteksi,
         ]);
     }
 
@@ -97,6 +104,10 @@ class MahasiswaImportController extends Controller
         Excel::import($import, $tempPath, 'local');
 
         Storage::disk('local')->delete($tempPath);
+
+        if ($import->pesanGagalDeteksi) {
+            return redirect()->route('mahasiswa.import')->withErrors($import->pesanGagalDeteksi);
+        }
 
         ImportLog::create([
             'user_id' => $request->user()->id,

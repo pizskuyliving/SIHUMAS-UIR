@@ -87,6 +87,21 @@ body.neu-body {
     box-shadow: inset 4px 4px 8px var(--neu-dark), inset -4px -4px 8px var(--neu-light), 0 0 0 2px var(--color-primary);
 }
 
+/*
+ * Permukaan khusus untuk DIALOG/MODAL (melayang di atas overlay gelap) -
+ * BEDA dari .neu-card. Kartu biasa (.neu-card) dirancang untuk elemen yang
+ * duduk LANGSUNG di atas latar belakang halaman yang sewarna, jadi shadow
+ * dua-arahnya pas. Tapi kalau dipakai untuk modal di atas overlay gelap,
+ * shadow terangnya jadi kelihatan "bersinar" aneh. Modal pakai shadow satu
+ * arah yang lembut saja, sudut lebih bulat, biar terasa benar-benar
+ * "melayang", bukan "menempel".
+ */
+.modal-surface {
+    background: var(--neu-bg);
+    border-radius: 28px;
+    box-shadow: 0 24px 60px -8px rgba(10, 40, 38, 0.45), 0 4px 16px rgba(10, 40, 38, 0.12);
+}
+
 /* Tombol netral (misal: "Cari", "Batal", "Reset") */
 .neu-btn {
     background: var(--neu-bg);

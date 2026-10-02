@@ -184,7 +184,7 @@
      window.confirmAction(this, 'pesan...') di atribut onsubmit form manapun -->
 <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
     <div class="modal-overlay absolute inset-0 bg-primary-dark/60"></div>
-    <div class="modal-card relative neu-card w-full max-w-sm p-6 text-center">
+    <div class="modal-card relative modal-surface w-full max-w-sm p-7 text-center">
         <div class="text-4xl mb-2">⚠️</div>
         <p id="confirm-modal-message" class="text-primary-dark font-semibold mb-6"></p>
         <div class="flex gap-3 justify-center">

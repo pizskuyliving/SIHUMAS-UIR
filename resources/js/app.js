@@ -211,14 +211,28 @@ window.profilePhotoCropper = function () {
             reader.onload = (e) => {
                 this.cropperOpen = true;
                 this.$nextTick(() => {
-                    this.$refs.cropImage.src = e.target.result;
-                    if (this.cropperInstance) this.cropperInstance.destroy();
-                    this.cropperInstance = new window.Cropper(this.$refs.cropImage, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 1,
-                        background: false,
-                    });
+                    const img = this.$refs.cropImage;
+
+                    img.onload = () => {
+                        // Tunggu 2 frame render browser supaya modal yang baru
+                        // saja muncul benar-benar selesai ditata ulang
+                        // (layout) sebelum Cropper.js mengukur lebar
+                        // wadahnya - kalau tidak, pengukuran pertama kali
+                        // bisa salah (terlalu sempit/terpotong).
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                if (this.cropperInstance) this.cropperInstance.destroy();
+                                this.cropperInstance = new window.Cropper(img, {
+                                    aspectRatio: 1,
+                                    viewMode: 1,
+                                    autoCropArea: 1,
+                                    background: false,
+                                });
+                            });
+                        });
+                    };
+
+                    img.src = e.target.result;
                 });
             };
             reader.readAsDataURL(file);
